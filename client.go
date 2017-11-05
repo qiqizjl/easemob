@@ -8,13 +8,17 @@ type Client struct {
 }
 
 //NewClient 获得一个新的客户端类
-func NewClient(ClientID, ClientSecert, OrgName, AppName string) *Client {
+func NewClient(ClientID, ClientSecert, OrgName, AppName string) (*Client, error) {
 	client := &Client{
-		ClientID,
-		ClientSecert,
+		ClientID:     ClientID,
+		ClientSecert: ClientSecert,
 	}
 	client.BaseURI = getBaseURI(OrgName, AppName)
-	return client
+	err := client.getAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	return client, err
 }
 
 func getBaseURI(OrgName, AppName string) string {
